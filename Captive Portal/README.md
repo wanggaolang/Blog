@@ -1,8 +1,4 @@
-#\<center\>Captive Portal\<center>
-#\<center\>Captive Portal\<center>
-#\<center\>Captive Portal\<center>
-#\<center\>Captive Portal\<center>
-222222222222222222222222222222222
+#\<center\>Captive Portal\</center>
 
 
 
