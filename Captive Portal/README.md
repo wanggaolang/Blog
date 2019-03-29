@@ -1,4 +1,4 @@
-#\<center\>Captive Portal\</center>
+#Captive Portal
 
 
 
