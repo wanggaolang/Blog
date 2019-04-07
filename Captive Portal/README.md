@@ -23,7 +23,7 @@
 
 
 
-![img](./image/clip_image002.jpg )          ![img](.\\image\\clip_image004.jpg )
+![img](./image/clip_image002.jpg )          ![img](./image/clip_image004.jpg )
 
  
 
