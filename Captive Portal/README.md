@@ -6,7 +6,7 @@
 
 -  **路由规则**：每来一个数据包，匹配其源ip是否在ipset设置的一个IP集中，是则放行；否则重定向到认证页面
 
-![1553787951089](C:\Users\宋洪栅\AppData\Roaming\Typora\typora-user-images\1553787951089.png)
+![1553787951089](./image/overview.png)
 
 
 
@@ -20,15 +20,16 @@
 
 认证界面：                                    下线界面：
 
- 
 
-![img](file:///C:\temp\msohtmlclip1\01\clip_image002.jpg)          ![img](file:///C:\temp\msohtmlclip1\01\clip_image004.jpg)
+
+
+![img](.\image\clip_image002.jpg )          ![img](.\image\clip_image004.jpg )
 
  
 
 未登录访问下线界面（没有session）：
 
-![img](file:///C:\temp\msohtmlclip1\01\clip_image006.jpg)
+![img](./image/session.png)
 
 - **Web服务器的部署(lnmp)**。唉，docker太菜了，只能自己搭建（找找网上的安装lnmp的shell脚本）。注意将nginx开放端口改为8080
 
