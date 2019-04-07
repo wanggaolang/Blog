@@ -1,4 +1,4 @@
-# Captive Portal
+# <center> Captive Portal </center>
 
 
 
@@ -12,9 +12,11 @@
 
 ![1553787951089](./image/01.jpg)
 
-<center style="color:gray">
-    图一
+ <center style="color:gray">
+      图一
 </center>
+
+
 
 --------------
 
