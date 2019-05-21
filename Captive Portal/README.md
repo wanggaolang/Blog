@@ -39,7 +39,7 @@
 
 
 
-- **[Web服务器的部署(lnmp)](./web服务环境搭建（lnmp）)**。唉，docker太菜了，只能自己搭建（找找网上的安装lnmp的shell脚本）。注意将nginx开放端口改为8080
+- **[Web服务器的部署(lnmp)](./web服务环境搭建（lnmp）)**。docker不太会，只能自己搭建（找找网上的安装lnmp的shell脚本）。注意将nginx开放端口改为8080
 
  
 
