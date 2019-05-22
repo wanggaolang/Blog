@@ -1,6 +1,5 @@
 /*
- * 借助了深入理解计算机系统的部分代码csapp.h 和csapp.c  ......  o.0
- *     实现http 1.0
+ * 在linux下的静态文件服务器，实现了http1.0
  */
 #include "csapp.h"
 #include <sys/types.h>
@@ -15,10 +14,10 @@ int parse_uri(char *uri, char *filename, char *cgiargs,char *address);
 void serve_static(int fd, char *filename, int filesize);
 void get_filetype(char *filename, char *filetype);
 void serve_dynamic(int fd, char *filename, char *cgiargs);
-void clienterror(int fd, char *cause, char *errnum, 
+void clienterror(int fd, char *cause, char *errnum,
 		 char *shortmsg, char *longmsg);
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
     int listenfd, connfd;
     char hostname[MAXLINE], port[MAXLINE];
@@ -34,7 +33,7 @@ int main(int argc, char **argv)
     while (1) {
 	clientlen = sizeof(clientaddr);
 	connfd = Accept(listenfd, (SA *)&clientaddr, &clientlen); //accept函数的升级版，等待主机连接
-        Getnameinfo((SA *) &clientaddr, clientlen, hostname, MAXLINE, 
+        Getnameinfo((SA *) &clientaddr, clientlen, hostname, MAXLINE,
                     port, MAXLINE, 0);
         printf("Accepted connection from (%s, %s)\n", hostname, port);//服务器回显
 	doit(connfd);                                             // //主机与服务器的交流
@@ -46,22 +45,22 @@ void doit(int fd)  //主机与服务器的交流函数
 {
     int is_static;
     struct stat sbuf;
-    /*struct stat  
-{   
-    dev_t       st_dev;      ID of device containing file -文件所在设备的ID  
-    ino_t       st_ino;      inode number -inode节点号    
-    mode_t      st_mode;     protection -保护模式    
-    nlink_t     st_nlink;    number of hard links -链向此文件的连接数(硬连接)    
-    uid_t       st_uid;      user ID of owner -user id   
+    /*struct stat
+{
+    dev_t       st_dev;      ID of device containing file -文件所在设备的ID
+    ino_t       st_ino;      inode number -inode节点号
+    mode_t      st_mode;     protection -保护模式
+    nlink_t     st_nlink;    number of hard links -链向此文件的连接数(硬连接)
+    uid_t       st_uid;      user ID of owner -user id
     gid_t       st_gid;      group ID of owner - group id
-    dev_t       st_rdev;     device ID (if special file) -设备号，针对设备文件   
-    off_t       st_size;     total size, in bytes -文件大小，字节为单位    
-    blksize_t   st_blksize;  blocksize for filesystem I/O -系统块的大小    
-    blkcnt_t    st_blocks;   number of blocks allocated -文件所占块数   
-    time_t      st_atime;    time of last access -最近存取时间    
-    time_t      st_mtime;    time of last modification -最近修改时间    
-    time_t      st_ctime;    time of last status change -     
-};  
+    dev_t       st_rdev;     device ID (if special file) -设备号，针对设备文件
+    off_t       st_size;     total size, in bytes -文件大小，字节为单位
+    blksize_t   st_blksize;  blocksize for filesystem I/O -系统块的大小
+    blkcnt_t    st_blocks;   number of blocks allocated -文件所占块数
+    time_t      st_atime;    time of last access -最近存取时间
+    time_t      st_mtime;    time of last modification -最近修改时间
+    time_t      st_ctime;    time of last status change -
+};
 stat结构体是文件（夹）信息的结构体，定义如下：以上信息就是可以通过_stat函数获取的所有相关信息，一般情况下，我们关心文件大小和创建时间、访问时间、修改时间。*/
     char buf[MAXLINE], method[MAXLINE], uri[MAXLINE], version[MAXLINE];
     char filename[MAXLINE], cgiargs[MAXLINE],address[MAXLINE],talk[MAXLINE];
@@ -81,7 +80,7 @@ stat结构体是文件（夹）信息的结构体，定义如下：以上信息�
 
     sprintf(talk, "你好，欢迎连接到本服务器\r\n");    //将初始连接的提示写入buf
     sprintf(talk, "%s请输入想获取文件的目录，如/文件夹1/文件夹2/文件夹3：\r\n", talk);
-    send(fd, talk, strlen(talk),0); 
+    send(fd, talk, strlen(talk),0);
 if (!Rio_readlineb(&rio, talk2, MAXLINE))  //将rio缓冲区的内容读入talk2
         return;
       sscanf(talk2,"%s",address);	//读取客户所给路径
@@ -92,7 +91,7 @@ if (!Rio_readlineb(&rio, talk2, MAXLINE))  //将rio缓冲区的内容读入talk2
      sprintf(talk, "********************************\r\n");
      sprintf(talk, "%s请输入你想获取的文件,如servers.c\r\n",talk);
      sprintf(talk, "%s********************************\r\n",talk);
-     send(fd, talk, strlen(talk),0); 
+     send(fd, talk, strlen(talk),0);
  if (!Rio_readlineb(&rio, fuck, MAXLINE))  //将rio缓冲区的内容读入fuck
         return;
     sscanf(fuck, "%s", uri);       //将主机说的话解析为请求URI
@@ -103,16 +102,16 @@ if (!Rio_readlineb(&rio, talk2, MAXLINE))  //将rio缓冲区的内容读入talk2
 	clienterror(fd, filename, "404", "Not found",
 		    "servers couldn't find this file");
 	return;
-    }                                                    
+    }
 
-    if (is_static) {   //提供静态内容         
+    if (is_static) {   //提供静态内容
 	if (!(S_ISREG(sbuf.st_mode)) || !(S_IRUSR & sbuf.st_mode)) { //服务器无权访问所请求的文件
 	    clienterror(fd, filename, "403", "Forbidden",
 			"servers couldn't read the file");
 	    return;
 	}
 	//提供静态内容，即复制合法的路径（filename）里的内容发给主机
-	serve_static(fd, filename, sbuf.st_size);        
+	serve_static(fd, filename, sbuf.st_size);
     }
     else { 	//提供动态内容
 	if (!(S_ISREG(sbuf.st_mode)) || !(S_IXUSR & sbuf.st_mode)) { //检验权限
@@ -121,12 +120,12 @@ if (!Rio_readlineb(&rio, talk2, MAXLINE))  //将rio缓冲区的内容读入talk2
 	    return;
 	}
 	//提供动态内容，即复制合法的路径（filename）里的内容发给主机
-	serve_dynamic(fd, filename, cgiargs);            
+	serve_dynamic(fd, filename, cgiargs);
     }
 }
 //在服务器显示HTTP请求头信息
 //为了保持循环，出现重复代码
-void read_requesthdrs(rio_t *rp) 
+void read_requesthdrs(rio_t *rp)
 {
     char buf[MAXLINE];
     Rio_readlineb(rp, buf, MAXLINE);//读取一行数据，放入buf
@@ -142,7 +141,7 @@ void read_requesthdrs(rio_t *rp)
 }
 //将uri解析为文件名和cgi参数
 //若是动态内容，返回0，静态则返回1
-int parse_uri(char *uri, char *filename, char *cgiargs,char *address) 
+int parse_uri(char *uri, char *filename, char *cgiargs,char *address)
 {   char bb[MAXLINE];
     sprintf(bb,"/");
     char *ptr;
@@ -153,26 +152,26 @@ int parse_uri(char *uri, char *filename, char *cgiargs,char *address)
 	strcpy(filename, address);                           //   ./表示当前文件夹
 	strcat(filename, uri);                           //将右边内容连接（不覆盖）进左边的内容
 	if (uri[strlen(uri)-1] == '/')    //若uri为"/"，则在其后添加根文件，此处为home.html
-	    strcat(filename, "home.html");              
+	    strcat(filename, "home.html");
 	return 1;
     }
-    else {  /* 动态内容 */                    //抽取cgi参数   
+    else {  /* 动态内容 */                    //抽取cgi参数
 	ptr = index(uri, '?');               //找出左边字符串中第一次出现右边参数的地址并返回
 	if (ptr) {
-	    strcpy(cgiargs, ptr+1);	     
+	    strcpy(cgiargs, ptr+1);
 	    *ptr = '\0';
 	}
-	else 
-	    strcpy(cgiargs, "");                         
-	strcpy(filename, "address");                           
-	strcat(filename, uri);                           
+	else
+	    strcpy(cgiargs, "");
+	strcpy(filename, "address");
+	strcat(filename, uri);
 	return 0;
     }
 }
 
 
 //提供静态内容，即复制合法的路径里的内容发给主机
-void serve_static(int fd, char *filename, int filesize) 
+void serve_static(int fd, char *filename, int filesize)
 {
     int srcfd;
     char *srcp, filetype[MAXLINE], buf[MAXBUF];
@@ -206,7 +205,7 @@ void get_filetype(char *filename, char *filetype) //获取文件类型，结果�
 	strcpy(filetype, "image/jpeg");
     else
 	strcpy(filetype, "text/plain");
-}  
+}
 
 void serve_dynamic(int fd, char *filename, char *cgiargs) //动态
 {
@@ -216,18 +215,18 @@ void serve_dynamic(int fd, char *filename, char *cgiargs) //动态
     Rio_writen(fd, buf, strlen(buf));    //将响应写入fd指定套接字描述符
     sprintf(buf, "Server: servers Web Server\r\n");
     Rio_writen(fd, buf, strlen(buf));
-  
+
     if (Fork() == 0) {      //派生一个新的子进程
-	setenv("QUERY_STRING", cgiargs, 1); 
+	setenv("QUERY_STRING", cgiargs, 1);
 	Dup2(fd, STDOUT_FILENO);         //子进程重定向它的标准输出到已连接文件描述符
 	Execve(filename, emptylist, environ); //运行cgi程序
     }
-    Wait(NULL); 
+    Wait(NULL);
 }
-  
+
 //向主机回显错误信息
-void clienterror(int fd, char *cause, char *errnum, 
-		 char *shortmsg, char *longmsg) 
+void clienterror(int fd, char *cause, char *errnum,
+		 char *shortmsg, char *longmsg)
 {
     char buf[MAXLINE], body[MAXBUF];
 
