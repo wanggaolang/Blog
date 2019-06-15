@@ -1,10 +1,11 @@
 /*
  * 在linux下的静态文件服务器，实现了http1.0
  */
-#include "csapp.h"
+
 #include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
+#include "csapp.h"
 #include <stdio.h>
 
 void readmulu(char *mulu,int fd);   //读取文件目录,并发给主机
